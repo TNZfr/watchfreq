@@ -1,0 +1,2 @@
+# watchfreq
+Processor frequency monitoring
