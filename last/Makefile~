@@ -1,9 +1,0 @@
-CC=gcc
-
-all: watchfreq1 watchfreq
-
-watchfreq1 : watchfreq1-*.c
-	$(CC) watchfreq1-*.c -o watchfreq1
-
-watchfreq : watchfreq-*.c
-	$(CC) watchfreq-*.c -o watchfreq
