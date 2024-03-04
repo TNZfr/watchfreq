@@ -68,13 +68,13 @@ CELL *DSP_CellAlloc (DISP *Display, int Row, int Col)
 void DSP_Free (DISP *Display)
 {
   free (Display->Cell);
+  free (Display);
 }
 
 //------------------------------------------------------------------------------
 void DSP_Refresh (DISP *Display, int CursorRow)
 {
   register int i,Prev;
-  register int nbupd=0;
   
   Prev = (Display->Current + 1) % 2;
   
