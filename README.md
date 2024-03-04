@@ -1,9 +1,10 @@
 # watchfreq
 Processor frequency monitoring
 
-
+# Install
 Just copy binary file in your $HOME/bin for example or compile it !<br>
 <br>
+# Run
 Syntax :
 watchfreq NbSec<br>
         NbSec : Monitoring time in seconds.<br>
@@ -11,6 +12,6 @@ watchfreq NbSec<br>
 Display on a Ryzen 9 5950X<br>
 ![](https://i.imgur.com/iIIyPPu.png)
 <br>
-Todo list <br>
-* Console size change at start and during execution
-<br>
+# What's next
+Todo list
+* Console size management at start and during execution
