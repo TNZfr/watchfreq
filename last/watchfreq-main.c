@@ -9,6 +9,7 @@
 #define FREQ_BASE_DIR "/sys/devices/system/cpu/cpufreq"
 #define COLOR_RED     "31"
 #define COLOR_GREEN   "32"
+#define COLOR_ORANGE  "33"
 #define COLOR_DEFAULT ""
 
 typedef struct
@@ -72,8 +73,9 @@ void DisplayMain (int NbCore)
   printf ("Total    :             Khz             Khz             Khz\n");
   printf ("Average  :             Khz             Khz             Khz\n");
   printf ("\n");
-  printf ("Nb Mini  :\n");
-  printf ("Nb Maxi  :\n");
+  printf ("# Mini   :\n");
+  printf ("# Running:\n");
+  printf ("# Maxi   :\n");
   printf ("\n");
   printf ("Extr. Min:             Khz             Khz             Khz\n");
   printf ("Extr. Max:             Khz             Khz             Khz\n");
@@ -88,8 +90,9 @@ int main (int NbArg, char **Arg)
   int   Secondes;
 
   FREQ *FreqData;
-  FREQ  Total,   Moyenne;
-  FREQ  NbMin,   NbMax, TopNbMin, TopNbMax;
+  FREQ  Total, Moyenne;
+  FREQ  NbMin, NbInt, NbMax;
+  FREQ  TopNbMin, TopNbMax;
   FREQ  ExtrMin, ExtrMax;
 
   FREQ  ColCur, ColMin, ColMax;
@@ -108,9 +111,9 @@ int main (int NbArg, char **Arg)
 
   Secondes = (int)atoi(Arg[1]);
 
-  DSP_Init (&Display, (NbCore + 6) * 3 );
+  DSP_Init (&Display, (NbCore + 7) * 3 );
   
-  FreqData = malloc ( (NbCore + 6) * sizeof(FREQ) );
+  FreqData = malloc ( (NbCore + 7) * sizeof(FREQ) );
   for (i=0; i<NbCore; i++)
   {
     FreqData[i].Cur.Cell = DSP_CellAlloc (&Display, i+2, 12);
@@ -128,16 +131,19 @@ int main (int NbArg, char **Arg)
   NbMin.Cur.Cell = DSP_CellAlloc (&Display, NbCore+6, 12);
   NbMin.Min.Cell = DSP_CellAlloc (&Display, NbCore+6, 28);
   NbMin.Max.Cell = DSP_CellAlloc (&Display, NbCore+6, 44);
-  NbMax.Cur.Cell = DSP_CellAlloc (&Display, NbCore+7, 12);
-  NbMax.Min.Cell = DSP_CellAlloc (&Display, NbCore+7, 28);
-  NbMax.Max.Cell = DSP_CellAlloc (&Display, NbCore+7, 44);
+  NbInt.Cur.Cell = DSP_CellAlloc (&Display, NbCore+7, 12);
+  NbInt.Min.Cell = DSP_CellAlloc (&Display, NbCore+7, 28);
+  NbInt.Max.Cell = DSP_CellAlloc (&Display, NbCore+7, 44);
+  NbMax.Cur.Cell = DSP_CellAlloc (&Display, NbCore+8, 12);
+  NbMax.Min.Cell = DSP_CellAlloc (&Display, NbCore+8, 28);
+  NbMax.Max.Cell = DSP_CellAlloc (&Display, NbCore+8, 44);
 
-  ExtrMin.Cur.Cell = DSP_CellAlloc (&Display, NbCore+9,  12);
-  ExtrMin.Min.Cell = DSP_CellAlloc (&Display, NbCore+9,  28);
-  ExtrMin.Max.Cell = DSP_CellAlloc (&Display, NbCore+9,  44);
-  ExtrMax.Cur.Cell = DSP_CellAlloc (&Display, NbCore+10, 12);
-  ExtrMax.Min.Cell = DSP_CellAlloc (&Display, NbCore+10, 28);
-  ExtrMax.Max.Cell = DSP_CellAlloc (&Display, NbCore+10, 44);
+  ExtrMin.Cur.Cell = DSP_CellAlloc (&Display, NbCore+10, 12);
+  ExtrMin.Min.Cell = DSP_CellAlloc (&Display, NbCore+10, 28);
+  ExtrMin.Max.Cell = DSP_CellAlloc (&Display, NbCore+10, 44);
+  ExtrMax.Cur.Cell = DSP_CellAlloc (&Display, NbCore+11, 12);
+  ExtrMax.Min.Cell = DSP_CellAlloc (&Display, NbCore+11, 28);
+  ExtrMax.Max.Cell = DSP_CellAlloc (&Display, NbCore+11, 44);
 
   // Affichage ecran principal
   DisplayMain (NbCore);
@@ -207,13 +213,21 @@ int main (int NbArg, char **Arg)
     CEL_PrintKhz (Moyenne.Min.Cell, COLOR_DEFAULT, Moyenne.Min.Value);
     CEL_PrintKhz (Moyenne.Max.Cell, COLOR_DEFAULT, Moyenne.Max.Value);
 
-    CEL_PrintVal (NbMin.Cur.Cell, NbMin.Cur.Value);
-    CEL_PrintVal (NbMin.Min.Cell, NbMin.Min.Value);
-    CEL_PrintVal (NbMin.Max.Cell, NbMin.Max.Value);
+    CEL_PrintValColor (NbMin.Cur.Cell, NbMin.Cur.Value, COLOR_GREEN);
+    CEL_PrintValColor (NbMin.Min.Cell, NbMin.Min.Value, COLOR_GREEN);
+    CEL_PrintValColor (NbMin.Max.Cell, NbMin.Max.Value, COLOR_GREEN);
 
-    CEL_PrintVal (NbMax.Cur.Cell, NbMax.Cur.Value);
-    CEL_PrintVal (NbMax.Min.Cell, NbMax.Min.Value);
-    CEL_PrintVal (NbMax.Max.Cell, NbMax.Max.Value);
+    NbInt.Cur.Value = NbCore - NbMin.Cur.Value - NbMax.Cur.Value;
+    //NbInt.Min.Value = NbCore - NbMin.Min.Value - NbMax.Min.Value;
+    //NbInt.Max.Value = NbCore - NbMin.Max.Value - NbMax.Max.Value;
+
+    CEL_PrintValColor (NbInt.Cur.Cell, NbInt.Cur.Value, COLOR_ORANGE);
+    //CEL_PrintValColor (NbInt.Min.Cell, NbInt.Min.Value, COLOR_ORANGE);
+    //CEL_PrintValColor (NbInt.Max.Cell, NbInt.Max.Value, COLOR_ORANGE);
+
+    CEL_PrintValColor (NbMax.Cur.Cell, NbMax.Cur.Value, COLOR_RED);
+    CEL_PrintValColor (NbMax.Min.Cell, NbMax.Min.Value, COLOR_RED);
+    CEL_PrintValColor (NbMax.Max.Cell, NbMax.Max.Value, COLOR_RED);
 
     CEL_PrintKhz (ExtrMin.Cur.Cell, COLOR_GREEN, ColCur.Min.Value);
     CEL_PrintKhz (ExtrMin.Min.Cell, COLOR_GREEN, ColMin.Min.Value);
@@ -223,7 +237,7 @@ int main (int NbArg, char **Arg)
     CEL_PrintKhz (ExtrMax.Min.Cell, COLOR_RED, ColMin.Max.Value);
     CEL_PrintKhz (ExtrMax.Max.Cell, COLOR_RED, ColMax.Max.Value);
 
-    DSP_Refresh (&Display, NbCore+11);
+    DSP_Refresh (&Display, NbCore+12);
     sleep (1);
   }
   return 0;

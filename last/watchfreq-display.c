@@ -28,6 +28,11 @@ void CEL_PrintVal (CELL *Cell, long Value)
   sprintf (Cell->Buffer, "%15d", Value);
 }
 
+void CEL_PrintValColor (CELL *Cell, long Value, char *Color)
+{
+  sprintf (Cell->Buffer, "%c[%sm%15d%c[m", 27, Color, Value, 27);
+}
+
 void CEL_Print2Val (CELL *Cell, long Value1, long Value2)
 {
   sprintf (Cell->Buffer, "%4d / %c[34m%4d%c[m", Value1, 27,Value2,27);

@@ -13,9 +13,10 @@ typedef struct
   CELL *Cell;
 } DISP;
 
-void  CEL_PrintKhz  (CELL *Cell, char *Color, long Freq);
-void  CEL_PrintVal  (CELL *Cell, long Value);
-void  CEL_Print2Val (CELL *Cell, long Value1,  long Value2);
+void  CEL_PrintKhz     (CELL *Cell, char *Color, long Freq);
+void  CEL_PrintVal     (CELL *Cell, long Value);
+void CEL_PrintValColor (CELL *Cell, long Value, char *Color);
+void  CEL_Print2Val    (CELL *Cell, long Value1,  long Value2);
 
 void  DSP_Init      (DISP *Display, int NbCell);
 CELL *DSP_CellAlloc (DISP *Display, int Row, int Col);
